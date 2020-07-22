@@ -1,0 +1,4 @@
+{
+  "URI": "mongodb+srv://long123:long123@cluster0.nhox8.mongodb.net/<dbname>?retryWrites=true&w=majority",
+  "jwtsecret": "lovesaigon"
+}
