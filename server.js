@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 
 app.use("/user", require("./routes/user.js"));
 
+app.use("/player", require("./routes/player"));
+
 app.use("*", (req, res) => res.status(404).json("Page not found"));
 
 app.listen(PORT, () => {
