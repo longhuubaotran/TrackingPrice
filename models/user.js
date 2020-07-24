@@ -8,8 +8,10 @@ const userSchema = new Schema({
     {
       name: { type: String, required: true },
       rating: { type: Number, required: true },
-      xbPrice: { type: Number, required: true },
+      pos: { type: String, required: true },
       psPrice: { type: Number, required: true },
+      xbPrice: { type: Number, required: true },
+      pcPrice: { type: Number, required: true },
     },
   ],
   createdAt: { type: Date, default: Date.now },
