@@ -1,10 +1,13 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const connectDb = require("./config/db");
 const PORT = process.env.PORT || 3000;
 
 connectDb();
+
+app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -17,3 +20,6 @@ app.use("*", (req, res) => res.status(404).json("Page not found"));
 app.listen(PORT, () => {
   console.log("server online");
 });
+
+// Add player's url to each player in Mongo DB
+// return the link cause errors due to invalid link

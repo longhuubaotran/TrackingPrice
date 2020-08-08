@@ -40,7 +40,7 @@ module.exports = async (url) => {
     const name = document.querySelector(".pcdisplay-name").innerText;
     const rating = document.querySelector(".pcdisplay-rat").innerText;
     const pos = document.querySelector(".pcdisplay-pos").innerText;
-    const player = { name, rating, pos, psPrice, xbPrice, pcPrice };
+    const player = { name, rating, pos, psPrice, xbPrice, pcPrice, link: url };
     return player;
   });
 
