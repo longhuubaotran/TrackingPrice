@@ -5,6 +5,11 @@ const auth = require("../middleware/auth");
 const User = require("../models/user");
 const router = express.Router();
 
+// @route   GET /user/getuser
+// @desc    Get a user
+// @access  Private
+router.get("/getuser", auth, userController.getUser);
+
 // @route   POST /user/register
 // @desc    Register a new user
 // @access  Public
@@ -15,7 +20,14 @@ router.post(
     body("password", "Password must be at least 6 charaters")
       .isAlphanumeric()
       .isLength({ min: 6 })
-      .trim(),
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.passwordConfirm) {
+          throw new Error("Password confirmation does not match password");
+        }
+
+        return true;
+      }),
   ],
   userController.createUser
 );

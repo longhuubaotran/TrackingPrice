@@ -1,34 +1,35 @@
-const { validationResult } = require("express-validator");
 const crawlData = require("../mainFunctions/crawlData");
 const User = require("../models/user");
 
 exports.crawlPlayerData = async (req, res) => {
-  const errors = validationResult(req);
-  // Check any errors from input validation
-  if (!errors.isEmpty()) {
-    return res.status(401).json({ errors: errors.array() });
-  }
+  const { playerURLList } = req.body;
+  const errors = [];
 
-  const player = await crawlData(req.body.playerURL);
-  if (player === undefined) {
-    return res
-      .status(404)
-      .json("Can't find this player, Please check URL again");
-  }
+  for (let i = 0; i < playerURLList.length; i++) {
+    const tempPlayer = await crawlData(playerURLList[i].playerURL);
 
-  const user = await User.findById(req.userId).select("-password");
+    if (tempPlayer === undefined) {
+      // Push the invalid url into array
+      errors.push(playerURLList[i].playerURL);
+    } else {
+      // Add url link to each user
+      const player = { ...tempPlayer, link: playerURLList[i].playerURL };
 
-  // Check if player is already existed
-  const filteredPlayers = user.players.filter((item) => {
-    if (item.name !== player.name || item.pos !== player.pos) {
-      return item;
+      const user = await User.findById(req.userId).select("-password");
+
+      // Check if player is already existed
+      const filteredPlayers = user.players.filter((item) => {
+        if (item.link !== player.link) {
+          return item;
+        }
+      });
+
+      user.players = [player, ...filteredPlayers];
+      await user.save();
     }
-  });
+  }
 
-  user.players = [player, ...filteredPlayers];
-  await user.save();
-
-  res.status(200).json("Player Added to Database");
+  res.status(200).json(errors);
 };
 
 exports.getPlayers = async (req, res) => {
@@ -45,4 +46,11 @@ exports.deletePlayer = async (req, res) => {
   user.players = [...filterdPlayers];
   await user.save();
   res.status(200).json("Player's been deleted");
+};
+
+exports.deleteAllPlayers = async (req, res) => {
+  const user = await User.findById(req.userId).select("-password");
+  user.players = [];
+  await user.save();
+  res.status(200).json("All Players have been deleted");
 };

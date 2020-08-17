@@ -12,6 +12,24 @@ module.exports = async (url) => {
     return;
   }
 
+  // Check if player is a SBC
+  await page.waitForSelector(".box_price");
+
+  let sbcCheck = await page.evaluate(() => {
+    // get the div which contain a text about SBC ("Estimated SBC price")
+    const sbcText = document.querySelector(".estimated-price-sbc-text");
+    // if the div exist, return the text
+    if (sbcText) {
+      return sbcText.innerText;
+    }
+    return;
+  });
+
+  // check if the SBC text exist
+  if (sbcCheck) {
+    return;
+  }
+
   // this selector contains player price
   await page.waitForSelector("span[data-price]");
 
@@ -40,7 +58,14 @@ module.exports = async (url) => {
     const name = document.querySelector(".pcdisplay-name").innerText;
     const rating = document.querySelector(".pcdisplay-rat").innerText;
     const pos = document.querySelector(".pcdisplay-pos").innerText;
-    const player = { name, rating, pos, psPrice, xbPrice, pcPrice, link: url };
+    const player = {
+      name,
+      rating,
+      pos,
+      psPrice,
+      xbPrice,
+      pcPrice,
+    };
     return player;
   });
 

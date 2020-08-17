@@ -12,9 +12,12 @@ exports.createUser = async (req, res) => {
   }
 
   try {
+    // Check if user's email existed
     const isExist = await User.findOne({ email: req.body.email });
     if (isExist) {
-      return res.status(401).json("Email is already existed");
+      return res
+        .status(401)
+        .json({ errors: [{ msg: "Email is already existed" }] });
     }
 
     const password = await bcrypt.hash(req.body.password, 12);
@@ -25,7 +28,13 @@ exports.createUser = async (req, res) => {
 
     await user.save();
 
-    res.status(201).json("User created");
+    const token = jwt.sign(
+      { userId: user._id.toString() },
+      config.get("jwtsecret"),
+      { expiresIn: "2h" }
+    );
+
+    res.status(201).json({ msg: "User created", token });
   } catch (err) {
     res.status(401).json(err);
   }
@@ -63,6 +72,20 @@ exports.loginUser = async (req, res) => {
 
     res.status(200).json({ msg: "Login success", token });
   } catch (error) {
+    res.status(400).json(err);
+  }
+};
+
+exports.getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+    if (!user) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "Can't get user with this user id" }] });
+    }
+    res.status(200).json({ user });
+  } catch (err) {
     res.status(400).json(err);
   }
 };
