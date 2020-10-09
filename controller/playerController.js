@@ -6,6 +6,10 @@ exports.crawlPlayerData = async (req, res) => {
   const errors = [];
 
   for (let i = 0; i < playerURLList.length; i++) {
+    if (playerURLList[i].playerURL === "") {
+      continue;
+    }
+
     const tempPlayer = await crawlData(playerURLList[i].playerURL);
 
     if (tempPlayer === undefined) {
