@@ -4,7 +4,7 @@ const { response } = require('express');
 module.exports = async (url) => {
   // Set up puppeteer
   const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    args: ['--no-sandbox'],
   });
   const page = await browser.newPage();
   const response = await page.goto(url, { waitUntil: 'domcontentloaded' });
