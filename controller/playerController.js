@@ -1,12 +1,12 @@
-const crawlData = require("../mainFunctions/crawlData");
-const User = require("../models/user");
+const crawlData = require('../mainFunctions/crawlData');
+const User = require('../models/user');
 
 exports.crawlPlayerData = async (req, res) => {
   const { playerURLList } = req.body;
   const errors = [];
 
   for (let i = 0; i < playerURLList.length; i++) {
-    if (playerURLList[i].playerURL === "") {
+    if (playerURLList[i].playerURL === '') {
       continue;
     }
 
@@ -19,7 +19,7 @@ exports.crawlPlayerData = async (req, res) => {
       // Add url link to each user
       const player = { ...tempPlayer, link: playerURLList[i].playerURL };
 
-      const user = await User.findById(req.userId).select("-password");
+      const user = await User.findById(req.userId).select('-password');
 
       // Check if player is already existed
       const filteredPlayers = user.players.filter((item) => {
@@ -27,6 +27,11 @@ exports.crawlPlayerData = async (req, res) => {
           return item;
         }
       });
+
+      // delete the last player to insert new one, array always has 5 items
+      if (filteredPlayers.length >= 4) {
+        filteredPlayers.splice(4, filteredPlayers.length - 1);
+      }
 
       user.players = [player, ...filteredPlayers];
       await user.save();
@@ -37,13 +42,13 @@ exports.crawlPlayerData = async (req, res) => {
 };
 
 exports.getPlayers = async (req, res) => {
-  const user = await User.findById(req.userId).select("-password");
+  const user = await User.findById(req.userId).select('-password');
   res.status(200).json({ players: user.players });
 };
 
 exports.deletePlayer = async (req, res) => {
   const playerId = req.params.playerId;
-  const user = await User.findById(req.userId).select("-password");
+  const user = await User.findById(req.userId).select('-password');
   const filterdPlayers = user.players.filter(
     (item) => item._id.toString() !== playerId
   );
@@ -53,8 +58,8 @@ exports.deletePlayer = async (req, res) => {
 };
 
 exports.deleteAllPlayers = async (req, res) => {
-  const user = await User.findById(req.userId).select("-password");
+  const user = await User.findById(req.userId).select('-password');
   user.players = [];
   await user.save();
-  res.status(200).json("All Players have been deleted");
+  res.status(200).json('All Players have been deleted');
 };
