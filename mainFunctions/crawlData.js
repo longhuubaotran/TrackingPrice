@@ -1,11 +1,13 @@
-const puppeteer = require("puppeteer");
-const { response } = require("express");
+const puppeteer = require('puppeteer');
+const { response } = require('express');
 
 module.exports = async (url) => {
   // Set up puppeteer
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
   const page = await browser.newPage();
-  const response = await page.goto(url, { waitUntil: "domcontentloaded" });
+  const response = await page.goto(url, { waitUntil: 'domcontentloaded' });
 
   // Check if page is 404
   if (response._status === 404) {
@@ -13,11 +15,11 @@ module.exports = async (url) => {
   }
 
   // Check if player is a SBC
-  await page.waitForSelector(".box_price");
+  await page.waitForSelector('.box_price');
 
   let sbcCheck = await page.evaluate(() => {
     // get the div which contain a text about SBC ("Estimated SBC price")
-    const sbcText = document.querySelector(".estimated-price-sbc-text");
+    const sbcText = document.querySelector('.estimated-price-sbc-text');
     // if the div exist, return the text
     if (sbcText) {
       return sbcText.innerText;
@@ -31,33 +33,33 @@ module.exports = async (url) => {
   }
 
   // this selector contains player price
-  await page.waitForSelector("span[data-price]");
+  await page.waitForSelector('span[data-price]');
 
   // crawl data and parse price to number
   let playerData = await page.evaluate(() => {
     const psPrice = parseFloat(
       document
-        .getElementById("ps-lowest-1")
-        .getAttribute("data-price")
-        .replace(/,/g, "")
+        .getElementById('ps-lowest-1')
+        .getAttribute('data-price')
+        .replace(/,/g, '')
     );
     const xbPrice = parseFloat(
       document
-        .getElementById("xbox-lowest-1")
-        .getAttribute("data-price")
-        .replace(/,/g, "")
+        .getElementById('xbox-lowest-1')
+        .getAttribute('data-price')
+        .replace(/,/g, '')
     );
 
     const pcPrice = parseFloat(
       document
-        .getElementById("pc-lowest-1")
-        .getAttribute("data-price")
-        .replace(/,/g, "")
+        .getElementById('pc-lowest-1')
+        .getAttribute('data-price')
+        .replace(/,/g, '')
     );
 
-    const name = document.querySelector(".pcdisplay-name").innerText;
-    const rating = document.querySelector(".pcdisplay-rat").innerText;
-    const pos = document.querySelector(".pcdisplay-pos").innerText;
+    const name = document.querySelector('.pcdisplay-name').innerText;
+    const rating = document.querySelector('.pcdisplay-rat').innerText;
+    const pos = document.querySelector('.pcdisplay-pos').innerText;
     const player = {
       name,
       rating,
