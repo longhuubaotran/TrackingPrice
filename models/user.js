@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -16,6 +16,7 @@ const userSchema = new Schema({
     },
   ],
   createdAt: { type: Date, default: Date.now },
+  autoScan: { type: Boolean, required: true },
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);

@@ -63,3 +63,29 @@ exports.deleteAllPlayers = async (req, res) => {
   await user.save();
   res.status(200).json('All Players have been deleted');
 };
+
+exports.autoCrawl = async (req, res) => {
+  const { email, timer } = req.body;
+
+  // Set autoScan of user to true
+  await User.updateOne({ _id: req.userId }, { $set: { autoScan: true } });
+
+  let user = await User.findById(req.userId).select('-password');
+
+  let { autoScan, players } = user;
+
+  // while (autoScan) {
+  //   console.log('in loop');
+  //   await sleep(10000);
+  //   user = await User.findById(req.userId).select('-password');
+  //   autoScan = user.autoScan;
+  // }
+
+  if (!autoScan) {
+    res.status(200).json({ msg: 'Stop Auto Scan' });
+  }
+};
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
