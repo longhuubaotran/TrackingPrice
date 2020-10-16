@@ -64,7 +64,7 @@ exports.deleteAllPlayers = async (req, res) => {
   res.status(200).json('All Players have been deleted');
 };
 
-exports.autoCrawl = async (req, res) => {
+exports.autoScan = async (req, res) => {
   const { email, timer } = req.body;
 
   // Set autoScan of user to true
@@ -73,17 +73,22 @@ exports.autoCrawl = async (req, res) => {
   let user = await User.findById(req.userId).select('-password');
 
   let { autoScan, players } = user;
-
+  console.log(players);
   // while (autoScan) {
   //   console.log('in loop');
-  //   await sleep(10000);
+  //   await sleep(6000);
+  //   // Check condition to loop
   //   user = await User.findById(req.userId).select('-password');
   //   autoScan = user.autoScan;
   // }
 
-  if (!autoScan) {
-    res.status(200).json({ msg: 'Stop Auto Scan' });
-  }
+  res.status(200).json({ msg: 'Auto has been stopped' });
+};
+
+exports.stopAuto = async (req, res) => {
+  // Set autoScan of user to false
+  await User.updateOne({ _id: req.userId }, { $set: { autoScan: false } });
+  res.status(200).json({ msg: 'Stop auto' });
 };
 
 function sleep(ms) {

@@ -23,9 +23,13 @@ router.delete('/delete', auth, playerController.deleteAllPlayers);
 // @access  Protected
 router.get('/getplayers', auth, playerController.getPlayers);
 
-// @route   POST/autocrawl
-// @desc    Auto crawl data
+// @route   POST/autoscan
+// @desc    Auto scan data
 // @access  Protected
-router.post('/autoscan', auth, playerController.autoCrawl);
+router.post('/autoscan', auth, playerController.autoScan);
 
+// @route   POST/stopauto
+// @desc    Stop Auto scan data
+// @access  Protected
+router.post('/stopauto', auth, playerController.stopAuto);
 module.exports = router;
