@@ -20,6 +20,7 @@
     "express-validator": "^6.6.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.25",
+    "nodemailer": "^6.4.14",
     "puppeteer": "^5.2.1"
   },
   "devDependencies": {
