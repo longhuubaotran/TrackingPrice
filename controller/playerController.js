@@ -109,7 +109,11 @@ function sleep(ms) {
 function sendEmail(playersList, email) {
   let text = '';
   playersList.forEach((player) => {
-    let tempText = `${player.name} | ${player.rating} | ${player.pos} | ps:${player.psPrice} | xb:${player.xbPrice} | pc:${player.pcPrice} \n \n`;
+    let tempText = `${player.name} | ${player.rating} | ${
+      player.pos
+    } | ps:${formatPrice(player.psPrice)} | xb:${formatPrice(
+      player.xbPrice
+    )} | pc:${formatPrice(player.pcPrice)} \n \n`;
     text += tempText;
   });
 
@@ -140,4 +144,9 @@ function sendEmail(playersList, email) {
       console.log('Email sent: ' + info.response);
     }
   });
+}
+
+function formatPrice(price) {
+  // Add comma to seperate 3 digits
+  return String(price).replace(/(.)(?=(\d{3})+$)/g, '$1,');
 }
