@@ -32,7 +32,7 @@ exports.createUser = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id.toString() },
       config.get('jwtsecret'),
-      { expiresIn: '2h' }
+      { expiresIn: '15m' }
     );
 
     res.status(201).json({ msg: 'User created', token });
@@ -70,7 +70,7 @@ exports.loginUser = async (req, res) => {
     };
 
     const token = await jwt.sign(payload, config.get('jwtsecret'), {
-      expiresIn: '2h',
+      expiresIn: '15m',
     });
 
     res.status(200).json({ msg: 'Login success', token });
